@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin');
 
 const extractCss = new ExtractTextPlugin({ filename: 'static/css/[name].[contenthash].css', allChunks: true });
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
@@ -10,7 +11,7 @@ const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 let pro = {
 	entry: {
-		"index": ['./src/index.js'],
+		"index": ['./src/index.jsx'],
 		vendor: ['react', 'react-dom'],
 	},
 	output: {
@@ -37,7 +38,7 @@ let pro = {
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			template: './src/index.html',
+			template: './src/index.ejs',
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true,
@@ -65,6 +66,28 @@ let pro = {
 				safe: true
 			}
 		}),
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['vendor'],
+      minChunks: function (module, count) {
+        // any required modules inside node_modules are extracted to vendor
+        return (
+          module.resource &&
+          /\.js$/.test(module.resource) &&
+          module.resource.indexOf(
+            path.join(__dirname, '../node_modules')
+          ) === 0
+        )
+      }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest',
+      chunks: ['vendor'],
+      minChunks: Infinity,
+    }),
+    new webpack.HashedModuleIdsPlugin(),
+    new InlineManifestWebpackPlugin({
+      name: 'webpackManifest'
+    }),
 	]
 };
 if (isProduction) {

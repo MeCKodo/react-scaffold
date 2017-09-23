@@ -2,10 +2,7 @@ const { resolve } = require('path');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const merge = require('webpack-merge');
-const InlineChunkManifestHtmlWebpackPlugin = require('inline-chunk-manifest-html-webpack-plugin');
-const os = require('os');
-var HappyPack = require('happypack');
+const HappyPack = require('happypack');
 
 module.exports = {
   cache: true,
@@ -17,10 +14,10 @@ module.exports = {
   },
   resolve: {
     modules: [
-      "node_modules",
-      path.resolve(__dirname, "../src"),
+      'node_modules',
+      path.resolve(__dirname, '../src'),
     ],
-    extensions: ['.js', '.vue', '.json', '.jsx', '.scss'],
+    extensions: ['.js', '.jsx', '.scss'],
   },
   module: {
     // noParse: /jquery|zepto|vue|vue-router|vuex/,
@@ -50,49 +47,31 @@ module.exports = {
   plugins: [
     new HappyPack({
       id: 'babel',
-      loaders: [ 'babel-loader?cacheDirectory=true' ],
+      loaders: ['babel-loader?cacheDirectory=true'],
     }),
-    /*new HappyPack({
+    /* new HappyPack({
       id: 'eslint',
       loaders: ['eslint-loader'],
-    }),*/
+    }), */
     new HappyPack({
       id: 'css',
-      loaders: [ 'css-loader?mportLoaders=1' ],
+      loaders: ['css-loader'],
     }),
     new HappyPack({
       id: 'sass',
-      loaders: [ 'sass-loader' ],
+      loaders: ['sass-loader'],
     }),
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: './src/index.ejs',
     }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       }
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: function (module, count) {
-        // any required modules inside node_modules are extracted to vendor
-        return (
-          module.resource &&
-          /\.js$/.test(module.resource) &&
-          module.resource.indexOf(
-            path.join(__dirname, '../node_modules')
-          ) === 0
-        )
-      }
-    }),
-    /* new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest',
-      chunks: ['vendor']
-    }), */
-    new InlineChunkManifestHtmlWebpackPlugin(),
     /*new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery"
+      $: 'jquery',
+      jQuery: 'jquery'
     }),*/
   ],
   devtool: '#cheap-module-eval-source-map',
