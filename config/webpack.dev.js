@@ -19,10 +19,10 @@ module.exports = {
       enforce: "pre",
     }*/{
 			test: /\.css$/,
-			use: ['style-loader', 'css-loader']
+			use: ['style-loader', 'css-loader?importLoader=1&modules&localIdentName=[path]___[name]__[local]___[hash:base64:5]']
 		}, {
 			test: /\.scss$/,
-			use: ['style-loader', 'css-loader', 'sass-loader']
+			use: ['style-loader', 'css-loader?importLoader=1&modules&localIdentName=[path]___[name]__[local]___[hash:base64:5]', 'sass-loader']
 		}],
 	},
 	plugins : [

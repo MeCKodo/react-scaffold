@@ -24,7 +24,15 @@ module.exports = {
     rules: [{
       test: /\.js|jsx$/,
       include: [resolve(__dirname, '../src')],
-      use: ['happypack/loader?id=babel'],
+      query: {
+        plugins: [
+          'transform-react-jsx',
+          [
+            'react-css-modules',
+          ]
+        ]
+      },
+      loader: 'babel-loader',
     }, {
       test: /\.html$/,
       use: 'html-loader'
